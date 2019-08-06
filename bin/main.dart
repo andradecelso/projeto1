@@ -18,6 +18,7 @@ void menu(){
   print('\nSelecione uma opcao:');
   print('1 - ver cotacao de hoje');
   print('2 - Registrar cotacao de hoje');
+  print('3 - Ver cotacoes registradas');
 
   String option = stdin.readLineSync();
 
@@ -25,9 +26,30 @@ void menu(){
 
     case 1: today(); break;
     case 2: registerData();break;
+    case 3: listData(); break;
     default:print('\n\n Opcao invalida'); menu(); break;
 
   }
+}
+
+
+listData(){
+
+dynamic fileData = readFile();
+
+fileData = (fileData != null && fileData.length > 0 ? json.decode(fileData) : List());
+
+
+print('\n\n-=-=-=-=-=   Listagem de dados -=-=-=-=-=-=-');
+
+fileData.forEach((data){
+
+  print('${data['date']} -->  ${data['data']}');
+
+
+});
+
+
 }
 
 registerData() async{

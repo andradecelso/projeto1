@@ -33,12 +33,12 @@ void menu(){
 }
 
 
+// metodo que exibe o conteudo do arquivo salvo
 listData(){
 
 dynamic fileData = readFile();
 
 fileData = (fileData != null && fileData.length > 0 ? json.decode(fileData) : List());
-
 
 print('\n\n-=-=-=-=-=   Listagem de dados -=-=-=-=-=-=-');
 
@@ -52,16 +52,20 @@ fileData.forEach((data){
 
 }
 
+
+// metodo que salva em arquivo o que recebe da api
 registerData() async{
 
 
 var hgData = await getData();
 dynamic fileData = readFile();
 
+// se o arquivo estiver vazio, cria uma lista vazia
 fileData = (fileData != null && fileData.length > 0 ? json.decode(fileData) : List());
 
 bool exists = false;
 
+//caso nao esteja vazio, armazena a data de hoje na ocorrencia recebida
 fileData.forEach((data){
 
   if(data['date'] == now())
@@ -69,13 +73,20 @@ fileData.forEach((data){
 });
 
 
+// se ocorrencia nao existir no arquivo, salva
+
 if(!exists){
 
+
+  // salva o mapa com data e dados em cada objeto do json
   fileData.add({"date": now(),"data": "${hgData['data']}"});
+
+  // salva o arquivo no diretorio corrente
   Directory dir = Directory.current;
   File file = new File(dir.path + '/meu_arquivo.txt');
   RandomAccessFile raf = file.openSync(mode: FileMode.write);
 
+  // salva em formato json, depois fecha o arquivo
   raf.writeStringSync(json.encode(fileData).toString());
   raf.flushSync();
   raf.closeSync();
@@ -91,12 +102,12 @@ if(!exists){
 
 }
 
+
+// metodo para ler o conteudo do arquivo
 String readFile(){
 
   Directory dir = Directory.current;
   File file = new File(dir.path + '/meu_arquivo.txt');
-
-
 
   if(!file.existsSync()){
 
@@ -112,9 +123,8 @@ String readFile(){
 
 
 
-
+//  exibe em tela os dados recebidos da api formatando a partir do mapa
 today() async {
-
 
   var data = await getData();
 
@@ -123,6 +133,8 @@ today() async {
 }
 
 
+
+// metodo que recebe os dados da api
 Future getData() async {
 
   String url='http://api.hgbrasil.com/finance?key=41a3d889';
@@ -138,6 +150,8 @@ Future getData() async {
     var ars = data['ARS'];
     var btc = data['BTC'];
 
+
+    // cria um mapa para os dados recebidos
     Map formatedMap = Map();
 
     formatedMap['date'] = now();
@@ -152,6 +166,8 @@ Future getData() async {
 
 }
 
+
+//metodo que retorna a data de hoje formatada
 String now(){
 
 
